@@ -1,44 +1,36 @@
 package java_testers.demo.model;
 
+import org.springframework.data.jpa.domain.AbstractPersistable;
+
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.Id;
+import java.util.*;
 
 @Entity
-public class Words {
+public class Words extends AbstractPersistable<TreeMap> {
 
-    String[] parsedString;
-    int[] counters;
-    private String id;
+    @ElementCollection
+    private Map<String, Integer> wordsAndCounters = new TreeMap<>();
 
-    public Words(String stringToParse) {
-        parsedString = stringToParse.split(" ");
-        for (String s : parsedString) {
-            s = s.replaceAll("[^A-z]+", "");
+
+    public Map<String, Integer> getWordsAndCounters() {
+        return sortMyMap(wordsAndCounters);
+    }
+
+    public void setWordsAndCounters(Map<String, Integer> wordsAndCounters) {
+        this.wordsAndCounters = wordsAndCounters;
+    }
+
+    //сортировка Map в обратном порядке, спасибо StackOverflow...
+    private <K, V extends Comparable<? super V>> Map<K, V> sortMyMap(Map<K, V> map) {
+        List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
+        list.sort(Map.Entry.comparingByValue());
+        Collections.reverse(list);
+        Map<K, V> result = new LinkedHashMap<>();
+        for (Map.Entry<K, V> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
         }
-        counters = new int[parsedString.length];
+        return result;
     }
 
-    public Words() {
-
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    @Id
-    public String getId() {
-        return id;
-    }
-    public String[] getParsedString() {
-        return parsedString;
-    }
-
-    public void setCounters(int index, int value) {
-        this.counters[index] = value;
-    }
-
-    public void setParsedString(String[] parsedString) {
-        this.parsedString = parsedString;
-    }
 }
