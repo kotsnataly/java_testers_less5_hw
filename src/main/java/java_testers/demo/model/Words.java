@@ -10,8 +10,7 @@ import java.util.*;
 public class Words extends AbstractPersistable<TreeMap> {
 
     @ElementCollection
-    private Map<String, Integer> wordsAndCounters = new TreeMap<>();
-
+    private Map<String, Integer> wordsAndCounters = new LinkedHashMap<>();
 
     public Map<String, Integer> getWordsAndCounters() {
         return sortMyMap(wordsAndCounters);
@@ -33,4 +32,10 @@ public class Words extends AbstractPersistable<TreeMap> {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return "Words{" +
+                "wordsAndCounters=" + wordsAndCounters +
+                '}';
+    }
 }

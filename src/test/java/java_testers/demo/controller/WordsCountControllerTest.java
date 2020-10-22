@@ -12,6 +12,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -27,8 +30,6 @@ class WordsCountControllerTest {
 
     @Test
     public void testWordsCounter1() throws Exception {
-        TextsStripper textsStripper = new TextsStripper();
-        textsStripper.openFile("C:\\Users\\shakja\\IdeaProjects\\lesson4hw\\src\\main\\resources\\The Return of the King.txt");
         MvcResult mvcResult = this.mockMvc.perform(post("/books")
                 .content("This tale grew in the telling")
                 .contentType(MediaType.TEXT_PLAIN)
@@ -38,6 +39,9 @@ class WordsCountControllerTest {
                 .andReturn();
 
         String result = mvcResult.getResponse().getContentAsString();
+        Map<String, Integer> mappedJsonResponse = new ObjectMapper().readValue(result, LinkedHashMap.class);
+        Words words = new Words();
+        words.setWordsAndCounters(mappedJsonResponse);
         //проверяем ответ на сушествование.
         Assertions.assertNotNull(result);
 
